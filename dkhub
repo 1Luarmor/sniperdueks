@@ -368,6 +368,22 @@ local speed = 16
 local ctrl = {f = 0, b = 0, l = 0, r = 0}
 local animationId = "rbxassetid://99870380291426"
 local animationTrack = nil
+local bg, bv
+
+UserInputService.InputBegan:Connect(function(input, gpe)
+    if gpe then return end
+    if input.KeyCode == Enum.KeyCode.W then ctrl.f = 1 end
+    if input.KeyCode == Enum.KeyCode.S then ctrl.b = -1 end
+    if input.KeyCode == Enum.KeyCode.A then ctrl.l = -1 end
+    if input.KeyCode == Enum.KeyCode.D then ctrl.r = 1 end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.W then ctrl.f = 0 end
+    if input.KeyCode == Enum.KeyCode.S then ctrl.b = 0 end
+    if input.KeyCode == Enum.KeyCode.A then ctrl.l = 0 end
+    if input.KeyCode == Enum.KeyCode.D then ctrl.r = 0 end
+end)
 
 local function startAnimation()
     local char = LocalPlayer.Character
@@ -377,14 +393,41 @@ local function startAnimation()
 
     if animationTrack then
         animationTrack:Stop()
+        animationTrack = nil
     end
 
     local anim = Instance.new("Animation")
     anim.AnimationId = animationId
-
     animationTrack = hum:LoadAnimation(anim)
     animationTrack.Looped = true
     animationTrack:Play()
+end
+
+local function stopFlying()
+    flying = false
+
+    local char = LocalPlayer.Character
+    if char then
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            hum.PlatformStand = false
+        end
+    end
+
+    if animationTrack then
+        animationTrack:Stop()
+        animationTrack = nil
+    end
+
+    if bv then
+        bv:Destroy()
+        bv = nil
+    end
+
+    if bg then
+        bg:Destroy()
+        bg = nil
+    end
 end
 
 local function Fly()
@@ -392,13 +435,13 @@ local function Fly()
     local torso = Character:WaitForChild("HumanoidRootPart")
     local humanoid = Character:WaitForChild("Humanoid")
 
-    local bg = Instance.new("BodyGyro")
+    bg = Instance.new("BodyGyro")
     bg.P = 9e4
     bg.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
     bg.CFrame = torso.CFrame
     bg.Parent = torso
 
-    local bv = Instance.new("BodyVelocity")
+    bv = Instance.new("BodyVelocity")
     bv.Velocity = Vector3.new(0, 0.1, 0)
     bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
     bv.Parent = torso
@@ -407,11 +450,11 @@ local function Fly()
     flying = true
     startAnimation()
 
-    while flying do
+    while flying and torso.Parent do
         task.wait()
         local camCF = workspace.CurrentCamera.CFrame
         local moveVec = (camCF.LookVector * (ctrl.f + ctrl.b)) +
-                        ((camCF * CFrame.new(ctrl.l + ctrl.r, 0, 0).Position - camCF.Position))
+            (camCF.RightVector * (ctrl.l + ctrl.r))
 
         if moveVec.Magnitude > 0 then
             bv.Velocity = moveVec.Unit * speed
@@ -422,14 +465,7 @@ local function Fly()
         bg.CFrame = camCF
     end
 
-    humanoid.PlatformStand = false
-    if animationTrack then
-        animationTrack:Stop()
-        animationTrack = nil
-    end
-
-    bv:Destroy()
-    bg:Destroy()
+    stopFlying()
 end
 
 DupeSection:Toggle({
@@ -437,9 +473,12 @@ DupeSection:Toggle({
     Flag = "NGLIDK",
     Default = false,
     Callback = function(Value)
-        flying = Value
         if Value then
-            task.spawn(Fly)
+            if not flying then
+                task.spawn(Fly)
+            end
+        else
+            stopFlying()
         end
     end
 })
@@ -453,7 +492,7 @@ DupeSection:Slider({
     Suffix = "s/ps",
     Flag = "FlyBypassedLOL",
     Callback = function(Value)
-        speed = Value
+        speed = tonumber(Value) or 16
     end
 })
 
