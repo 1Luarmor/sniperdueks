@@ -31,16 +31,22 @@ for Index, Color in pairs(CustomTheme) do
     Library:ChangeTheme(Index, Color)
 end
 
-
 local Pages = {}
+
 Pages["Main"] = Window:Page({
     Name = "Main",
     Icon = "136623465713368",
     SubPages = false
 })
 
+Pages["Players"] = Window:Page({
+    Name = "Players",
+    Icon = "118417240207681",
+    SubPages = false
+})
+
 local LocalPlayerSection = Pages["Main"]:Section({
-    Name = "Local player Utilities",
+    Name = "Local Player Utilities",
     Icon = "",
     Columns = 1,
     Side = 1
@@ -59,15 +65,14 @@ local DupeSection = Pages["Main"]:Section({
     Side = 2,
 })
 
-local Pages = {}
-Pages["Players"] = Window:Page({
-    Name = "Players",
-    Icon = "118417240207681",
-    SubPages = false
-})
-
 local MSection = Pages["Players"]:Section({ 
     Name = "Players",
+    Icon = "",
+    Columns = 1,
+})
+
+local TrollSection = Pages["Players"]:Section({ 
+    Name = "Troll",
     Icon = "",
     Columns = 1,
 })
@@ -574,5 +579,98 @@ MSection:Toggle({
                 loopTpConnection = nil
             end
         end
+    end
+})
+
+local spamNotificationEnabled = false
+local spamMessage = "Bypassin On Top Join Discord Here - https://discord.gg/bypassin"
+local spamCount = 20
+local spamDelay = 0.1
+local spamDuration = 30
+
+TrollSection:Textbox({
+    Name = "Tweet Messages",
+    Default = "",
+    Placeholder = "Input message...",
+    Callback = function(Value)
+        if Value and Value ~= "" then
+            spamMessage = tostring(Value)
+        end
+    end
+})
+
+TrollSection:Slider({
+    Name = "Spam Amount",
+    Default = 20,
+    Min = 1,
+    Max = 200,
+    Decimals = 0,
+    Suffix = "x",
+    Callback = function(Value)
+        spamCount = math.clamp(math.floor(Value), 1, 200)
+    end
+})
+
+TrollSection:Slider({
+    Name = "Spam Delay",
+    Default = 0.1,
+    Min = 0.05,
+    Max = 5,
+    Decimals = 2,
+    Suffix = "s",
+    Callback = function(Value)
+        spamDelay = math.clamp(Value, 0.05, 5)
+    end
+})
+
+TrollSection:Slider({
+    Name = "Message Duration",
+    Default = 30,
+    Min = 1,
+    Max = 60,
+    Decimals = 0,
+    Suffix = "s",
+    Callback = function(Value)
+        spamDuration = math.clamp(math.floor(Value), 1, 60)
+    end
+})
+
+TrollSection:Toggle({
+    Name = "Spam Notifications",
+    Default = false,
+    Callback = function(state)
+        spamNotificationEnabled = state
+
+        if not state then
+            return
+        end
+
+        task.spawn(function()
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Event = ReplicatedStorage:FindFirstChild("notificationFunction")
+            if not Event then
+                spamNotificationEnabled = false
+                return
+            end
+
+            for i = 1, spamCount do
+                if not spamNotificationEnabled then
+                    break
+                end
+
+                pcall(function()
+                    firesignal(
+                        Event.OnClientEvent,
+                        spamMessage,
+                        Color3.fromRGB(42, 208, 255),
+                        spamDuration
+                    )
+                end)
+
+                task.wait(spamDelay)
+            end
+
+            spamNotificationEnabled = false
+        end)
     end
 })
