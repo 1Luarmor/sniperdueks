@@ -1,820 +1,668 @@
- genv = getgenv()
-local fenv = getfenv()
+local UserInputService = game:GetService("UserInputService")
 
-task.spawn(function(...)
-    local _ = workspace.CurrentCamera
+local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 
-    game:GetService('RunService')
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/dkhub43221/newui/refs/heads/main/kiwi"))()
 
-    local _call13 = game:GetService('HttpService')
-    local _call15 = game:GetService('MarketplaceService')
-    local _LocalPlayer16 = game:GetService('Players').LocalPlayer
-    local _call18 = game:GetService('LocalizationService')
+local windowSize
 
-    game:GetService('TweenService')
-    game:GetService('ReplicatedStorage')
-    game:GetService('VirtualInputManager')
-    wait()
-    game:IsLoaded()
-    wait()
-    wait()
-    wait()
+if isMobile then
+    windowSize = UDim2.new(0.6, 0.35) 
+else
+    windowSize = UDim2.new(0, 400, 0, 300)
+end
 
-    local _ = _LocalPlayer16.PlayerGui
+local Window = Library:Window({
+    Name = "Bypassin",
+    Version = "v2.1",
+    Logo = "128173600263640",
+    Size = windowSize,
+    FadeSpeed = 0.25,
+})
 
-    game:GetService('StarterGui'):SetCore('SendNotification', {
-        Duration = 15,
-        Text = 'Successfully loaded with fixes',
-        Title = 'NIGGA Hub Loaded!',
-        Button1 = 'Awesome!',
-    })
+local CustomTheme = {
+    Main = Color3.fromRGB(20, 20, 20),
+    Accent = Color3.fromRGB(255, 0, 0),
+    Text = Color3.fromRGB(255, 255, 255)
+}
 
-    local _36 = identifyexecutor()
+for Index, Color in pairs(CustomTheme) do
+    Library.Theme[Index] = Color
+    Library:ChangeTheme(Index, Color)
+end
 
-    identifyexecutor()
 
-    local _ = _LocalPlayer16.MembershipType == Enum.MembershipType.Premium
-    local _ = game:GetService('UserInputService').TouchEnabled
-    local _call55 = _call13:JSONEncode({
-        hwid = gethwid(),
-        placeName = _call15:GetProductInfo(game.PlaceId).Name,
-        device = 'Mobile',
-        placeId = game.PlaceId,
-        userId = _LocalPlayer16.UserId,
-        displayName = _LocalPlayer16.DisplayName,
-        username = _LocalPlayer16.Name,
-        membershipType = tostring(_LocalPlayer16.MembershipType),
-        accountAge = _LocalPlayer16.AccountAge,
-        jobId = game.JobId,
-        isPremium = false,
-        countryCode = _call18:GetCountryRegionForPlayerAsync(_LocalPlayer16),
-        executor = _36,
-    })
+local Pages = {}
+Pages["Main"] = Window:Page({
+    Name = "Main",
+    Icon = "136623465713368",
+    SubPages = false
+})
 
-    http_request({
-        Body = _call55,
-        Url = 'https://gupr0.vercel.app/api/ui',
-        Method = 'POST',
-        Headers = {
-            ['Content-Type'] = 'application/json',
-        },
-    })
-    game:IsLoaded()
+local LocalPlayerSection = Pages["Main"]:Section({
+    Name = "Local player Utilities",
+    Icon = "",
+    Columns = 1,
+    Side = 1
+}) 
 
-    local _ = fenv.syn
+local TeleportationSection = Pages["Main"]:Section({ 
+    Name = "Teleportation",
+    Icon = "",
+    Columns = 1,
+})
 
-    genv.protectgui = function()
-    end
+local DupeSection = Pages["Main"]:Section({ 
+    Name = "Local Player Mods",
+    Icon = "",
+    Columns = 2,
+    Side = 2,
+})
 
-    local _workspaceCurrentCamera61 = workspace.CurrentCamera
-    local _call63 = game:GetService('Players')
+local TrollSection = Pages["Players"]:Section({ 
+    Name = "Troll",
+    Icon = "",
+    Columns = 2,
+})
 
-    game:GetService('GuiService')
-    game:GetService('HttpService')
+local Pages = {}
+Pages["Players"] = Window:Page({
+    Name = "Players",
+    Icon = "118417240207681",
+    SubPages = false
+})
 
-    local _LocalPlayer72 = _call63.LocalPlayer
+local MSection = Pages["Players"]:Section({ 
+    Name = "Players",
+    Icon = "",
+    Columns = 1,
+})
 
-    _LocalPlayer72:GetMouse()
+local function tp(Pos)
+    local plr = game.Players.LocalPlayer
+    local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") or plr.CharacterAdded:Wait():WaitForChild("HumanoidRootPart")
+    hrp.CFrame = CFrame.new(Pos)
+end
 
-    local _ = _workspaceCurrentCamera61.WorldToScreenPoint
-    local _ = _workspaceCurrentCamera61.WorldToViewportPoint
-    local _ = _workspaceCurrentCamera61.GetPartsObscuringTarget
-    local _gameFindFirstChild79 = game.FindFirstChild
-    local _RenderStepped80 = game:GetService('RunService').RenderStepped
-    local _ = game:GetService('UserInputService').GetMouseLocation
-    local _call83 = Color3.fromRGB(255, 255, 255)
-    local _call85 = Color3.fromRGB(255, 255, 255)
-    local _call87 = Color3.fromRGB(255, 255, 255)
-    local _call89 = Color3.fromRGB(255, 255, 255)
-    local _call91 = Color3.fromRGB(0, 0, 0)
-    local _call93 = Color3.fromRGB(255, 0, 0)
+LocalPlayerSection:Toggle({
+    Name = "Infinite Stamina",
+    Flag = "Idklol",
+    Default = false,
+    Callback = function(Value)
+        getgenv().infiniteStaminaLoop = Value
 
-    genv.SilentAimSettings = {
-        Enabled = false,
-        HitChance = 100,
-        TargetPart = 'HumanoidRootPart',
-        MaxDistance = 500,
-        ESP = {
-            Enabled = false,
-            MaxDistance = 500,
-            Name = {
-                Enabled = false,
-                Color = _call83,
-                Size = 16,
-            },
-            Tracer = {
-                Enabled = false,
-                Transparency = 1,
-                Position = 'Bottom',
-                Color = _call85,
-                Thickness = 1,
-            },
-            HeadDot = {
-                Enabled = false,
-                Color = _call87,
-                Filled = false,
-                Size = 4,
-            },
-            TargetColor = _call93,
-            Chams = {
-                Enabled = true,
-                Transparency = 0.5,
-                OutlineTransparency = 0,
-                Color = _call89,
-                OutlineColor = _call91,
-            },
-        },
-        TeamCheck = false,
-        FOVRadius = 130,
-        FOVVisible = false,
-        VisibleCheck = false,
-    }
-
-    local _call95 = Instance.new('ScreenGui')
-
-    _call95.Name = 'FOVContainer'
-    _call95.Parent = game.CoreGui
-    _call95.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    _call95.ResetOnSpawn = false
-    _call95.IgnoreGuiInset = true
-
-    local _call102 = Instance.new('Frame')
-
-    _call102.Name = 'SilentFOV'
-    _call102.Parent = _call95
-    _call102.BackgroundTransparency = 1
-    _call102.Size = UDim2.fromOffset(260, 260)
-    _call102.Position = UDim2.fromScale(0.5, 0.5)
-    _call102.AnchorPoint = Vector2.new(0.5, 0.5)
-    _call102.Visible = false
-    _call102.ZIndex = 10
-
-    local _call110 = Instance.new('UICorner')
-
-    _call110.CornerRadius = UDim.new(1, 0)
-    _call110.Parent = _call102
-
-    local _call114 = Instance.new('UIStroke')
-
-    _call114.Color = Color3.fromRGB(54, 57, 241)
-    _call114.Thickness = 1
-    _call114.Transparency = 0
-    _call114.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    _call114.Parent = _call102
-    fenv.CalculateChance = function(_117)
-        local _118 = math.floor(_117)
-        local _126 = math.floor((Random.new().NextNumber(Random.new(), 0, 1) * 100))
-        local _ = (_126 / 100) <= (_118 / 100)
-
-        return true
-    end
-
-    game.CoreGui:FindFirstChild('ToggleUI')
-    game.CoreGui:FindFirstChild('ToggleUI'):Destroy()
-
-    local _call139 = Instance.new('ScreenGui')
-    local _call141 = Instance.new('ImageButton')
-    local _call143 = Instance.new('UICorner')
-    local _call145 = Instance.new('UIStroke')
-    local _call147 = Instance.new('ImageLabel')
-    local _call149 = Instance.new('Frame')
-    local _call151 = Instance.new('UICorner')
-    local _call153 = game:GetService('TweenService')
-
-    _call139.Name = 'ToggleUI'
-    _call139.Parent = game.CoreGui
-    _call139.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    _call139.ResetOnSpawn = false
-    _call141.Name = 'ToggleButton'
-    _call141.Parent = _call139
-    _call141.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-    _call141.BackgroundTransparency = 0
-    _call141.BorderSizePixel = 0
-    _call141.Position = UDim2.new(0.12, 0, 0.095, 0)
-    _call141.Size = UDim2.new(0, 60, 0, 60)
-    _call141.Image = 'rbxassetid://136708788109475'
-    _call141.ImageColor3 = Color3.fromRGB(151, 113, 255)
-    _call141.ScaleType = Enum.ScaleType.Fit
-    _call141.AutoButtonColor = false
-    _call141.ZIndex = 3
-    _call143.CornerRadius = UDim.new(0, 18)
-    _call143.Parent = _call141
-    _call145.Color = Color3.fromRGB(151, 113, 255)
-    _call145.Thickness = 2
-    _call145.Transparency = 0.5
-    _call145.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    _call145.Parent = _call141
-    _call147.Name = 'GlowEffect'
-    _call147.Parent = _call141
-    _call147.BackgroundTransparency = 1
-    _call147.Position = UDim2.new(0.5, 0, 0.5, 0)
-    _call147.Size = UDim2.new(1.4, 0, 1.4, 0)
-    _call147.AnchorPoint = Vector2.new(0.5, 0.5)
-    _call147.Image = 'rbxassetid://5028857084'
-    _call147.ImageColor3 = Color3.fromRGB(151, 113, 255)
-    _call147.ImageTransparency = 0.7
-    _call147.ZIndex = 1
-    _call149.Name = 'PulseFrame'
-    _call149.Parent = _call141
-    _call149.BackgroundColor3 = Color3.fromRGB(151, 113, 255)
-    _call149.BackgroundTransparency = 1
-    _call149.Position = UDim2.new(0.5, 0, 0.5, 0)
-    _call149.Size = UDim2.new(1, 0, 1, 0)
-    _call149.AnchorPoint = Vector2.new(0.5, 0.5)
-    _call149.ZIndex = 2
-    _call151.CornerRadius = UDim.new(0, 18)
-    _call151.Parent = _call149
-
-    _call141.MouseEnter:Connect(function()
-        local _call204 = _call153:Create(_call141, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
-            BackgroundColor3 = Color3.fromRGB(35, 32, 45),
-        })
-
-        _call204:Play()
-
-        local _call212 = _call153:Create(_call145, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
-            Transparency = 0.2
-        })
-
-        _call212:Play()
-    end)
-    _call141.MouseLeave:Connect(function()
-        local _call226 = _call153:Create(_call141, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
-            BackgroundColor3 = Color3.fromRGB(25, 25, 35),
-        })
-
-        _call226:Play()
-
-        local _call234 = _call153:Create(_call145, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
-            Transparency = 0.5
-        })
-
-        _call234:Play()
-    end)
-    _call141.MouseButton1Click:Connect(function()
-        local _call250 = _call153:Create(_call141, TweenInfo.new(0.08, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
-            Size = UDim2.new(0, 52, 0, 52),
-        })
-        local _call260 = _call153:Create(_call141, TweenInfo.new(0.12, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 60, 0, 60),
-        })
-        local _call268 = _call153:Create(_call141, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {
-            BackgroundColor3 = Color3.fromRGB(40, 35, 50),
-        })
-        local _call276 = _call153:Create(_call141, TweenInfo.new(0.15, Enum.EasingStyle.Quad), {
-            BackgroundColor3 = Color3.fromRGB(25, 25, 35),
-        })
-        local _call282 = _call153:Create(_call145, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {
-            Transparency = 0
-        })
-        local _call288 = _call153:Create(_call145, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
-            Transparency = 0.5
-        })
-
-        _call149.BackgroundTransparency = 0.5
-
-        local _call298 = _call153:Create(_call149, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            BackgroundTransparency = 1,
-            Size = UDim2.new(1.8, 0, 1.8, 0),
-        })
-
-        _call250:Play()
-        _call268:Play()
-        _call282:Play()
-        _call250.Completed:Connect(function()
-            _call260:Play()
-            _call276:Play()
-            _call288:Play()
-            _call298:Play()
-            _call298.Completed:Connect(function()
-                _call149.Size = UDim2.new(1, 0, 1, 0)
+        if Value then
+            task.spawn(function()
+                while getgenv().infiniteStaminaLoop do
+                    local plr = game:GetService("Players").LocalPlayer
+                    local events = plr:FindFirstChild("Events")
+                    if events then
+                        local energy = events:FindFirstChild("Energy")
+                        if energy then
+                            energy:FireServer(false)
+                        end
+                    end
+                    task.wait(0.2)
+                end
             end)
-        end)
+        else
+            local plr = game:GetService("Players").LocalPlayer
+            local events = plr:FindFirstChild("Events")
+            if events then
+                local energy = events:FindFirstChild("Energy")
+                if energy then
+                    energy:FireServer(false)
+                end
+            end
+        end
+    end
+})
 
-        local _ = fenv.Library
+ LocalPlayerSection:Toggle({
+    Name = "Instant Interact",
+    Flag = "InstantInteraction",
+    Default = false,
+    Callback = function(Value)
+        local Workspace = game:GetService("Workspace")
 
-        error("line 2: attempt to index nil with 'Toggle'")
-    end)
-    _call141.InputBegan:Connect(function(_327)
-        local _ = _327.UserInputType == Enum.UserInputType.MouseButton1
-        local _ = _327.UserInputType == Enum.UserInputType.Touch
-    end)
-    _call141.InputChanged:Connect(function(_339)
-        local _ = _339.UserInputType == Enum.UserInputType.MouseMovement
-        local _ = _339.UserInputType == Enum.UserInputType.Touch
-    end)
-    game:GetService('UserInputService').InputChanged:Connect(function(_351)
-    end)
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v:IsA("ProximityPrompt") then
+                v.HoldDuration = Value and 0 or 0.5
+            end
+        end
 
-    local _call359 = _call153:Create(_call147, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, - 1, true), {
-        ImageTransparency = 0.4
-    })
+        if Value then
+            getgenv().InstantInteractionConnection = Workspace.DescendantAdded:Connect(function(descendant)
+                if descendant:IsA("ProximityPrompt") then
+                    descendant.HoldDuration = 0
+                end
+            end)
+        else
+            if getgenv().InstantInteractionConnection then
+                getgenv().InstantInteractionConnection:Disconnect()
+                getgenv().InstantInteractionConnection = nil
+            end
+        end
+    end
+})
 
-    _call359:Play()
+LocalPlayerSection:Toggle({
+    Name = "Anti No Combat",
+    Flag = "AntiCombat",
+    Default = false,
+    Callback = function(Value)
+        local plr = game:GetService("Players").LocalPlayer
+        local settings = plr:FindFirstChild("Settings")
+        if settings then
+            local settingsObj = settings:FindFirstChild("Settings")
+            if settingsObj then
+                getgenv().antiCombatLoop = Value
 
-    local _365 = loadstring(game:HttpGet([[https://raw.githubusercontent.com/deividcomsono/Obsidian/main/Library.lua]]))()
-    local _369 = loadstring(game:HttpGet([[https://raw.githubusercontent.com/deividcomsono/Obsidian/main/addons/ThemeManager.lua]]))()
-    local _373 = loadstring(game:HttpGet([[https://raw.githubusercontent.com/deividcomsono/Obsidian/main/addons/SaveManager.lua]]))()
-    local _ = _365.Toggles
+                if Value then
+                    task.spawn(function()
+                        while getgenv().antiCombatLoop do
+                            if settingsObj:GetAttribute("Combat") == true then
+                                settingsObj:SetAttribute("Combat", false)
+                            end
+                            task.wait(0.01)
+                        end
+                    end)
+                end
+            end
+        end
+    end
+})
 
-    _365.ForceCheckbox = true
-    _365.ShowCustomCursor = false
+LocalPlayerSection:Toggle({
+    Name = "Anti Knockout",
+    Flag = "AntiOnCamera",
+    Default = false,
+    Callback = function(Value)
+        local plr = game:GetService("Players").LocalPlayer
+        local settings = plr:FindFirstChild("Settings")
+        if settings then
+            local settingsObj = settings:FindFirstChild("Settings")
+            if settingsObj then
+                if Value then
+                    getgenv().antiKnockoutLoop = true
+                    task.spawn(function()
+                        while getgenv().antiKnockoutLoop do
+                            if settingsObj:GetAttribute("KnockedOut") == true then
+                                settingsObj:SetAttribute("KnockedOut", false)
+                            end
+                            task.wait(0.2)
+                        end
+                    end)
+                else
+                    getgenv().antiKnockoutLoop = false
+                end
+            end
+        end
+    end
+})
 
-    local _call383 = _365:CreateWindow({
-        SidebarMinWidth = 200,
-        ShowCustomCursor = false,
-        Compact = true,
-        CornerRadius = 16,
-        SidebarCollapseThreshold = 0.45,
-        Resizable = true,
-        SearchbarSize = UDim2.fromScale(0.53, 1),
-        EnableSidebarResize = true,
-        Font = Enum.Font.Gotham,
-        Title = 'DKs HUB',
-        Footer = 'Made By XDk | Read bio before @',
-        MobileButtonsSide = 'Left',
-        DisableSearch = false,
-        SidebarCompactWidth = 56,
-        Size = UDim2.fromOffset(580, 500),
-    })
-    local _call385 = _call383:AddTab({
-        Description = 'Player & game info',
-        Name = 'Info',
-        Icon = 'info',
-    })
-    local _call387 = _call383:AddTab({
-        Description = 'Core features',
-        Name = 'Main',
-        Icon = 'crosshair',
-    })
-    local _call389 = _call383:AddTab({
-        Description = 'ESP & visuals',
-        Name = 'Visuals',
-        Icon = 'eye',
-    })
-    local _call391 = _call383:AddTab({
-        Description = 'UI & options',
-        Name = 'UI Settings',
-        Icon = 'settings',
-    })
+LocalPlayerSection:Toggle({
+     Name = "Anti Gate Jump",
+    Flag = "DisableGateJumps",
+    Default = false,
+    Callback = function(Value)
+        local jumpsFolder = workspace:WaitForChild("GateJumps"):WaitForChild("Jumps")
+        getgenv().DisabledTouchInterests = getgenv().DisabledTouchInterests or {}
 
-    _call385:UpdateWarningBox({
-        Visible = true,
-        Title = '<font color="rgb(0,170,255)"><b>[ UPDATE 1.2 ]</b></font>',
-        IsNormal = true,
-        Text = [[
+        if Value then
+            for _, jump in ipairs(jumpsFolder:GetDescendants()) do
+                if jump:IsA("BasePart") then
+                    for _, child in ipairs(jump:GetChildren()) do
+                        if child:IsA("TouchTransmitter") or child.Name == "TouchInterest" then
+                            local clone = child:Clone()
+                            child:Destroy()
+                            table.insert(getgenv().DisabledTouchInterests, {part = jump, obj = clone})
+                        end
+                    end
+                end
+            end
 
-<font color="rgb(100, 200, 255)"><b>UPDATE</b></font>
-<font color="rgb(207, 226, 247)"><b>- Fixed Fov SilentAim [ Mobile ]</b></font>
+            getgenv().ClimbBlockConnection = jumpsFolder.DescendantAdded:Connect(function(desc)
+                if desc:IsA("TouchTransmitter") or desc.Name == "TouchInterest" then
+                    local parent = desc.Parent
+                    local clone = desc:Clone()
+                    desc:Destroy()
+                    table.insert(getgenv().DisabledTouchInterests, {part = parent, obj = clone})
+                end
+            end)
+        else
+            for _, data in ipairs(getgenv().DisabledTouchInterests) do
+                if data.part and data.obj and data.part:IsDescendantOf(workspace) then
+                    data.obj.Parent = data.part
+                end
+            end
 
-<font color="rgb(100,255,180)"><b>Support me by subscribing on YouTube!</b></font>]],
-        LockSize = true,
-    })
+            getgenv().DisabledTouchInterests = {}
 
-    local _LocalPlayer396 = game:GetService('Players').LocalPlayer
-    local _398 = identifyexecutor()
-    local _call402 = _call385:AddLeftGroupbox('Account')
+            if getgenv().ClimbBlockConnection then
+                getgenv().ClimbBlockConnection:Disconnect()
+                getgenv().ClimbBlockConnection = nil
+            end
+        end
+    end
+})
 
-    _call402:AddImage('MyAgaImage', {
-        Image = 'rbxthumb://type=AvatarHeadShot&id=' .. _LocalPlayer396.UserId .. '&w=420&h=420',
-        Height = 150,
-        ScaleType = Enum.ScaleType.Fit,
-        Color = Color3.new(1, 1, 1),
-        RectOffset = Vector2.zero,
-        RectSize = Vector2.zero,
-        Transparency = 0,
-    })
-    _call402:AddLabel('<font color="rgb(100,255,180)">Welcome back, </font>' .. '<font color="rgb(255,255,255)"><b>' .. _LocalPlayer396.Name .. '</b></font>' .. '<font color="rgb(180,180,180)">!</font>\n' .. '<font color="rgb(120,180,255)">Executor:</font> ' .. '<font color="rgb(255,255,255)"><b>' .. _398 .. '</b></font>', true)
 
-    local _call423 = _call402:AddButton({
-        Func = function()
-            setclipboard('https://www.youtube.com/@dkhub')
-            _365:Notify('Copy Youtube Link', 4)
-        end,
-        Text = 'Youtube',
-    })
+LocalPlayerSection:Toggle({
+    Name = "Anti On Camera",
+    Flag = "AntiOnCamera",
+    Default = false,
+    Callback = function(Value)
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local remote = ReplicatedStorage:FindFirstChild("cameraZoneFunction")
 
-    _call423:AddButton({
-        Func = function()
-            setclipboard('https://discord.gg/jdux6HE2YF')
-            _365:Notify('Copy Discord Link Server', 4)
-        end,
-        Text = 'Discord',
-    })
+        if Value then
+            if remote then
+                getgenv().OriginalCameraZoneRemote = remote
+                remote.Parent = nil
+            end
+        else
+            if getgenv().OriginalCameraZoneRemote then
+                getgenv().OriginalCameraZoneRemote.Parent = ReplicatedStorage
+                getgenv().OriginalCameraZoneRemote = nil
+            end
+        end
+    end
+})
 
-    local _call435 = _call385:AddRightGroupbox('Feedback System', 'mail')
+local TeleportLocations = {
+    ["ð¦ Bank"] = Vector3.new(-469, 317, -423),
+    ["ð¬ Mail Job"] = Vector3.new(-35, 317, -384),
+    ["âï¸ Ice Blox"] = Vector3.new(-1281, 317, 519),
+    ["ð Barber Shop"] = Vector3.new(-157, 321, 749),
+    ["ð« Gun Shop"] = Vector3.new(195, 318, 945),
+    ["ð§º Laundromat"] = Vector3.new(-1, 317, 934),
+    ["ð° Black Market"] = Vector3.new(316, 317, 1093),
+    ["â½ Gas Station"] = Vector3.new(288, 317, 299),
+    ["ð Car Dealership"] = Vector3.new(646, 317, 347),
+    ["ð Clothing"] = Vector3.new(887, 318, -311),
+    ["ð± Devices"] = Vector3.new(693, 317, -76),
+    ["ð ï¸ Auto Shop"] = Vector3.new(1035, 317, 819),
+    ["ð Beauty Studio"] = Vector3.new(802, 317, 958),
+    ["ðï¸ Garbage Job"] = Vector3.new(288, 317, 797),
+    ["ð² Lumber Job"] = Vector3.new(742, 317, 847)
+}
 
-    _call435:AddInput('FeedbackInput', {
-        Finished = true,
-        Default = '',
-        Numeric = false,
-        Text = 'Your Feedback',
-        Callback = function(_438)
-        end,
-        Placeholder = 'Type your feedback here...',
-    })
-    _call435:AddButton({
-        Func = function()
-            local _call443 = game:GetService('HttpService')
-            local _447 = identifyexecutor()
-            local _call449 = game:GetService('MarketplaceService')
-            local _call455 = DateTime.now()
-            local _call459 = _call443:JSONEncode({
-                username = _LocalPlayer396.Name,
-                placeName = _call449:GetProductInfo(game.PlaceId).Name,
-                executor = _447,
-                feedback = _438,
-                timestamp = _call455:ToIsoDate(),
-                userId = _LocalPlayer396.UserId,
-                displayName = _LocalPlayer396.DisplayName,
-            })
 
-            http_request({
-                Body = _call459,
-                Url = 'https://gupr0.vercel.app/api/feedback',
-                Method = 'POST',
-                Headers = {
-                    ['Content-Type'] = 'application/json',
-                },
-            })
-            _365:Notify({
-                Time = 3,
-                Title = 'Feedback',
-                Description = 'Feedback sent successfully!',
-            })
-        end,
-        Text = 'Send Feedback',
-    })
+local selectedTeleportName = next(TeleportLocations)
 
-    local _call464 = _call387:AddLeftGroupbox('Silent Aim Settings', 'target')
 
-    _call464:AddToggle('aim_Enabled', {
-        Text = 'Enabled',
-        Default = false,
-        Callback = function(_467)
-        end,
-    })
-    _call464:AddDropdown('TargetPart', {
-        Callback = function(_470)
-        end,
-        Text = 'Target Part',
-        Values = {
-            [1] = 'Head',
-            [2] = 'HumanoidRootPart',
-            [3] = 'Random',
-        },
-        Default = 'HumanoidRootPart',
-    })
-    _call464:AddSlider('HitChance', {
-        Min = 0,
-        Default = 100,
-        Compact = false,
-        Max = 100,
-        Text = 'Hit Chance',
-        Callback = function(_473)
-        end,
-        Rounding = 1,
-    })
-    _call464:AddSlider('MaxDistance', {
-        Min = 100,
-        Default = 500,
-        Compact = false,
-        Max = 500,
-        Text = 'Max Distance',
-        Callback = function(_476)
-        end,
-        Rounding = 0,
-    })
+local locationNames = {}
+for name, _ in pairs(TeleportLocations) do
+    table.insert(locationNames, name)
+end
 
-    local _call478 = _call387:AddRightGroupbox('FOV Settings', 'circle')
-    local _call480 = _call478:AddToggle('Visible', {
-        Text = 'Show FOV Circle',
-        Default = false,
-        Callback = function(_481)
-            _call102.Visible = _481
-        end,
-    })
+table.sort(locationNames)
 
-    _call480:AddColorPicker('Color', {
-        Callback = function(_486)
-            _call114.Color = _486
-        end,
-        Default = Color3.fromRGB(54, 57, 241),
-        Title = 'FOV Color',
-    })
-    _call478:AddSlider('Radius', {
-        Min = 0,
-        Default = 130,
-        Max = 360,
-        Text = 'FOV Circle Radius',
-        Callback = function(_489)
-            _call102.Size = UDim2.fromOffset((_489 * 2), (_489 * 2))
-        end,
-        Rounding = 0,
-    })
+TeleportationSection:Dropdown({
+    Name = "Select Location",
+    Flag = "idkngl2",
+    MaxSize = 145,
+    Default = locationNames[1],
+    Items = locationNames,
+    Callback = function(option)
+        if TeleportLocations[option] then
+            selectedTeleportName = option
+        end
+    end
+})
 
-    local _call495 = _call389:AddLeftGroupbox('ESP Main', 'eye')
+TeleportationSection:Button({
+    Name = "Teleport to selected location",
+    Callback = function(Value)
+        local position = TeleportLocations[selectedTeleportName]
+        if position then
+            tp(position)
+        end
+    end
+})
 
-    _call495:AddToggle('ESPEnabled', {
-        Text = 'Enable ESP',
-        Default = false,
-        Callback = function(_498)
-        end,
-    })
-    _call495:AddSlider('ESPMaxDistance', {
-        Min = 100,
-        Default = 500,
-        Compact = false,
-        Max = 500,
-        Text = 'ESP Max Distance',
-        Callback = function(_501)
-        end,
-        Rounding = 0,
-    })
-    _call495:AddButton({
-        Func = function()
-            _365:Notify({
-                Time = 3,
-                Title = 'ESP Cleared',
-                Description = 'All ESP has been cleared!',
-            })
-        end,
-        Text = 'Clear All ESP',
-    })
-    _call495:AddDivider()
-    _call495:AddLabel('Target Highlight Color'):AddColorPicker('TargetColor', {
-        Callback = function(_513)
-        end,
-        Tooltip = 'Color when player is targeted',
-        Default = _call93,
-        Title = 'Target Color',
-    })
+local tpwalking = false
+local tpwalkspeed = 10
+local RunService = game:GetService("RunService")
 
-    local _call515 = _call389:AddLeftGroupbox('Name ESP', 'type')
-
-    _call515:AddToggle('NameEnabled', {
-        Text = 'Enable Name ESP',
-        Default = false,
-        Callback = function(_518)
-        end,
-    })
-    _call515:AddSlider('NameSize', {
-        Min = 8,
-        Default = 16,
-        Max = 24,
-        Text = 'Name Size',
-        Callback = function(_521)
-        end,
-        Rounding = 0,
-    })
-    _call515:AddLabel('Name Color'):AddColorPicker('NameColor', {
-        Callback = function(_526)
-        end,
-        Default = _call83,
-        Title = 'Name Color',
-    })
-
-    local _call528 = _call389:AddRightGroupbox('Tracer ESP', 'zap')
-
-    _call528:AddToggle('TracerEnabled', {
-        Text = 'Enable Tracer',
-        Default = false,
-        Callback = function(_531)
-        end,
-    })
-    _call528:AddDropdown('TracerPosition', {
-        Values = {
-            [1] = 'Bottom',
-            [2] = 'Center',
-            [3] = 'Top',
-        },
-        Text = 'Tracer Start Position',
-        Multi = false,
-        Callback = function(_534)
-        end,
-        Default = 'Bottom',
-    })
-    _call528:AddSlider('TracerThickness', {
-        Min = 1,
-        Default = 1,
-        Max = 5,
-        Text = 'Tracer Thickness',
-        Callback = function(_537)
-        end,
-        Rounding = 0,
-    })
-    _call528:AddSlider('TracerTransparency', {
-        Min = 0.1,
-        Default = 1,
-        Max = 1,
-        Text = 'Tracer Transparency',
-        Callback = function(_540)
-        end,
-        Rounding = 1,
-    })
-    _call528:AddLabel('Tracer Color'):AddColorPicker('TracerColor', {
-        Callback = function(_545)
-        end,
-        Default = _call85,
-        Title = 'Tracer Color',
-    })
-
-    local _call547 = _call389:AddRightGroupbox('Head Dot ESP', 'target')
-
-    _call547:AddToggle('HeadDotEnabled', {
-        Text = 'Enable Head Dot',
-        Default = false,
-        Callback = function(_550)
-        end,
-    })
-    _call547:AddToggle('HeadDotFilled', {
-        Text = 'Filled Circle',
-        Default = false,
-        Callback = function(_553)
-        end,
-    })
-    _call547:AddSlider('HeadDotSize', {
-        Min = 2,
-        Default = 4,
-        Max = 12,
-        Text = 'Dot Size',
-        Callback = function(_556)
-        end,
-        Rounding = 0,
-    })
-    _call547:AddLabel('Head Dot Color'):AddColorPicker('HeadDotColor', {
-        Callback = function(_561)
-        end,
-        Default = _call87,
-        Title = 'Head Dot Color',
-    })
-
-    local _call563 = _call389:AddLeftGroupbox('Chams ESP', 'layers')
-
-    _call563:AddToggle('ChamsEnabled', {
-        Text = 'Enable Chams',
-        Default = true,
-        Callback = function(_566)
-        end,
-    })
-    _call563:AddSlider('ChamsTransparency', {
-        Min = 0,
-        Default = 0.5,
-        Max = 1,
-        Text = 'Chams Transparency',
-        Callback = function(_569)
-        end,
-        Rounding = 1,
-    })
-    _call563:AddLabel('Chams Color'):AddColorPicker('ChamsColor', {
-        Callback = function(_574)
-        end,
-        Tooltip = 'Color for normal players',
-        Default = _call89,
-        Title = 'Chams Color',
-    })
-    _call563:AddDivider()
-    _call563:AddLabel('Outline Color'):AddColorPicker('ChamsOutlineColor', {
-        Callback = function(_581)
-        end,
-        Tooltip = 'Color of the chams outline',
-        Default = _call91,
-        Title = 'Outline Color',
-    })
-    _call563:AddSlider('ChamsOutlineTransparency', {
-        Min = 0,
-        Default = 0,
-        Max = 1,
-        Text = 'Outline Transparency',
-        Callback = function(_584)
-        end,
-        Rounding = 1,
-    })
-
-    local _call586 = _call391:AddLeftGroupbox('Menu', 'wrench')
-
-    _call586:AddToggle('KeybindMenuOpen', {
-        Text = 'Open Keybind Menu',
-        Default = _365.KeybindFrame.Visible,
-        Callback = function(_591)
-            local _KeybindFrame592 = _365.KeybindFrame
-
-            _KeybindFrame592.Visible = _591
-        end,
-    })
-    _call586:AddToggle('ShowCustomCursor', {
-        Text = 'Custom Cursor',
-        Default = false,
-        Callback = function(_595)
-            _365.ShowCustomCursor = _595
-        end,
-    })
-    _call586:AddDropdown('NotificationSide', {
-        Callback = function(_598)
-            _365:SetNotifySide(_598)
-        end,
-        Text = 'Notification Side',
-        Values = {
-            [1] = 'Left',
-            [2] = 'Right',
-        },
-        Default = 'Right',
-    })
-    _call586:AddDropdown('DPIDropdown', {
-        Callback = function(_603)
-            _603:gsub('%%', '')
-            _365:SetDPIScale(nil)
-        end,
-        Text = 'DPI Scale',
-        Values = {
-            [1] = '50%',
-            [2] = '75%',
-            [3] = '100%',
-            [4] = '125%',
-            [5] = '150%',
-            [6] = '175%',
-            [7] = '200%',
-        },
-        Default = '100%',
-    })
-    _call586:AddDivider()
-    _call586:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', {
-        NoUI = true,
-        Default = 'RightShift',
-        Text = 'Menu keybind',
-    })
-    _call586:AddButton('Unload', function()
-        _365:Unload()
-    end)
-
-    _365.ToggleKeybind = _365.Options.MenuKeybind
-
-    _369:SetLibrary(_365)
-    _373:SetLibrary(_365)
-    _369:SetDefaultTheme({
-        MainColor = Color3.fromRGB(24, 22, 26),
-        FontFace = Enum.Font.Gotham,
-        AccentColor = Color3.fromRGB(251, 167, 255),
-        OutlineColor = Color3.fromRGB(41, 38, 48),
-        BackgroundColor = Color3.fromRGB(15, 15, 15),
-        FontColor = Color3.fromRGB(255, 255, 255),
-    })
-    _365:SetFont(Enum.Font.Gotham)
-    _373:IgnoreThemeSettings()
-    _373:SetIgnoreIndexes({
-        [1] = 'MenuKeybind',
-    })
-    _369:SetFolder('SilentAim')
-    _373:SetFolder('SilentAim/Raycast')
-    _373:BuildConfigSection(_call391)
-    _369:ApplyToTab(_call391)
-    _RenderStepped80:Connect(function()
-        local _ViewportSize657 = _workspaceCurrentCamera61.ViewportSize
-
-        Vector2.new((_ViewportSize657.X / 2), (_ViewportSize657.Y / 2))
-
-        for _665, _665_2 in next, _call63:GetPlayers() do
-            local _ = _665_2 == _LocalPlayer72
-            local _Character667 = _665_2.Character
-
-            _gameFindFirstChild79(_Character667, 'HumanoidRootPart')
-
-            local _ = _gameFindFirstChild79(_Character667, 'Humanoid').Health
-
-            error('line 2: attempt to compare table <= number')
+local function startTpWalk()
+    tpwalking = true
+    task.spawn(function()
+        local player = game.Players.LocalPlayer
+        local chr = player.Character
+        local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+        while tpwalking and chr and hum and hum.Parent do
+            local delta = RunService.Heartbeat:Wait()
+            if hum.MoveDirection.Magnitude > 0 then
+                chr:TranslateBy(hum.MoveDirection * tpwalkspeed * delta)
+            end
         end
     end)
-    newcclosure(function(...)
-        local _671_vararg1 = ...
+end
 
-        getnamecallmethod()
+local function stopTpWalk()
+    tpwalking = false
+end
 
-        local _673 = math.floor(_473)
-        local _681 = math.floor((Random.new().NextNumber(Random.new(), 0, 1) * 100))
-        local _ = (_681 / 100) <= (_673 / 100)
-        local _ = _671_vararg1 == workspace
 
-        error('line 2: attempt to call a nil value')
-    end)
-    hookmetamethod(game, '__namecall', function(...)
-        local _687_vararg1 = ...
+DupeSection:Toggle({
+    Name = "Modify Walkspeed",
+    Flag = "NGLIDK",
+    Default = false,
+    Callback = function(Value)
+         if Value then
+            startTpWalk()
+        else
+            stopTpWalk()
+        end
+    end
+})
 
-        getnamecallmethod()
 
-        local _689 = math.floor(_473)
-        local _697 = math.floor((Random.new().NextNumber(Random.new(), 0, 1) * 100))
-        local _ = (_697 / 100) <= (_689 / 100)
-        local _ = _687_vararg1 == workspace
 
-        error('line 2: attempt to call a nil value')
-    end)
-    _365:Notify({
-        Title = 'Script Loaded',
-        Time = 5,
-    })
-end, ...)
-task.spawn(function()
-    local _ = game.GetObjects
+DupeSection:Slider({
+    Name = "WalkSpeed Value",
+    Default = 16,
+    Min = 10,
+    Max = 100,
+    Decimals = 2,
+    Suffix = "s/ps",
+    Flag = "WSBypassedLOL",
+    Callback = function(Value)
+         tpwalkspeed = Value
+    end
+})
 
-    loadstring(game:HttpGet(game:GetObjects('rbxassetid://112405618584821')[1].Value .. '/src'))()
-end)
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = game.Players.LocalPlayer
+
+local flying = false
+local speed = 16
+local ctrl = {f = 0, b = 0, l = 0, r = 0}
+local animationId = "rbxassetid://99870380291426"
+local animationTrack = nil
+
+local function startAnimation()
+    local char = LocalPlayer.Character
+    if not char then return end
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not hum then return end
+
+    if animationTrack then
+        animationTrack:Stop()
+    end
+
+    local anim = Instance.new("Animation")
+    anim.AnimationId = animationId
+
+    animationTrack = hum:LoadAnimation(anim)
+    animationTrack.Looped = true
+    animationTrack:Play()
+end
+
+local function Fly()
+    local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local torso = Character:WaitForChild("HumanoidRootPart")
+    local humanoid = Character:WaitForChild("Humanoid")
+
+    local bg = Instance.new("BodyGyro")
+    bg.P = 9e4
+    bg.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+    bg.CFrame = torso.CFrame
+    bg.Parent = torso
+
+    local bv = Instance.new("BodyVelocity")
+    bv.Velocity = Vector3.new(0, 0.1, 0)
+    bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+    bv.Parent = torso
+
+    humanoid.PlatformStand = true
+    flying = true
+    startAnimation()
+
+    while flying do
+        task.wait()
+        local camCF = workspace.CurrentCamera.CFrame
+        local moveVec = (camCF.LookVector * (ctrl.f + ctrl.b)) +
+                        ((camCF * CFrame.new(ctrl.l + ctrl.r, 0, 0).Position - camCF.Position))
+
+        if moveVec.Magnitude > 0 then
+            bv.Velocity = moveVec.Unit * speed
+        else
+            bv.Velocity = Vector3.new(0, 0.1, 0)
+        end
+
+        bg.CFrame = camCF
+    end
+
+    humanoid.PlatformStand = false
+    if animationTrack then
+        animationTrack:Stop()
+        animationTrack = nil
+    end
+
+    bv:Destroy()
+    bg:Destroy()
+end
+
+DupeSection:Toggle({
+    Name = "Modify Fly",
+    Flag = "NGLIDK",
+    Default = false,
+    Callback = function(Value)
+        flying = Value
+        if Value then
+            task.spawn(Fly)
+        end
+    end
+})
+
+DupeSection:Slider({
+    Name = "Fly Speed Value",
+    Default = 16,
+    Min = 10,
+    Max = 100,
+    Decimals = 2,
+    Suffix = "s/ps",
+    Flag = "FlyBypassedLOL",
+    Callback = function(Value)
+        speed = Value
+    end
+})
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+
+local selectedPlayerName
+local loopTpConnection
+
+local function getPlayerNames()
+    local names = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        table.insert(names, player.Name)
+    end
+    return names
+end
+
+local function getTarget()
+    if not selectedPlayerName then return end
+    local plr = Players:FindFirstChild(selectedPlayerName)
+    if not plr or not plr.Character then return end
+    return plr,
+        plr.Character:FindFirstChild("HumanoidRootPart"),
+        plr.Character:FindFirstChildOfClass("Humanoid")
+end
+
+local playerDropdown
+playerDropdown = MSection:Dropdown({
+    Name = "Select Player",
+    Flag = "player_select",
+    MaxSize = 145,
+    Items = getPlayerNames(),
+    Callback = function(option)
+        selectedPlayerName = option
+    end
+})
+
+local function refreshDropdown()
+    local items = getPlayerNames()
+    if playerDropdown.Set then
+        playerDropdown:Set(items)
+    elseif playerDropdown.Refresh then
+        playerDropdown:Refresh(items)
+    elseif playerDropdown.Update then
+        playerDropdown:Update(items)
+    end
+end
+
+Players.PlayerAdded:Connect(refreshDropdown)
+Players.PlayerRemoving:Connect(refreshDropdown)
+
+MSection:Button({
+    Name = "Teleport To Selected Player",
+    Callback = function()
+        local _, hrp = getTarget()
+        if hrp then
+            tp(hrp.Position)
+        end
+    end
+})
+
+MSection:Toggle({
+    Name = "Spectate Selected Player",
+    Flag = "spectate_player",
+    Default = false,
+    Callback = function(Value)
+        local _, _, humanoid = getTarget()
+        if Value and humanoid then
+            Camera.CameraSubject = humanoid
+        else
+            local myHumanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if myHumanoid then
+                Camera.CameraSubject = myHumanoid
+            end
+        end
+    end
+})
+
+MSection:Toggle({
+    Name = "Bring Selected Player",
+    Flag = "bring_player",
+    Default = false,
+    Callback = function(Value)
+        if not Value then return end
+        local _, targetHrp = getTarget()
+        local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if targetHrp and myHrp then
+            targetHrp.CFrame = myHrp.CFrame
+        end
+    end
+})
+
+MSection:Toggle({
+    Name = "Loop Teleport To Selected Player",
+    Flag = "loop_tp_player",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            loopTpConnection = RunService.Heartbeat:Connect(function()
+                local _, hrp = getTarget()
+                if hrp then
+                    tp(hrp.Position)
+                end
+            end)
+        else
+            if loopTpConnection then
+                loopTpConnection:Disconnect()
+                loopTpConnection = nil
+            end
+        end
+    end
+})
+
+local spamNotificationEnabled = false
+local spamMessage = "Bypassin On Top Join Discord Here - https://discord.gg/bypassin"
+local spamCount = 20
+local spamDelay = 0.1
+local spamDuration = 30
+
+TrollSection:Textbox({
+    Name = "Tweet Messages",
+    Default = "",
+    Placeholder = "Input message...",
+    Callback = function(Value)
+        if Value and Value ~= "" then
+            spamMessage = tostring(Value)
+        end
+    end
+})
+
+TrollSection:Slider({
+    Name = "Spam Amount",
+    Default = 20,
+    Min = 1,
+    Max = 200,
+    Decimals = 0,
+    Suffix = "x",
+    Callback = function(Value)
+        spamCount = math.floor(Value)
+    end
+})
+
+TrollSection:Slider({
+    Name = "Spam Delay",
+    Default = 0.1,
+    Min = 0.05,
+    Max = 5,
+    Decimals = 2,
+    Suffix = "s",
+    Callback = function(Value)
+        spamDelay = Value
+    end
+})
+
+TrollSection:Slider({
+    Name = "Message Duration",
+    Default = 30,
+    Min = 1,
+    Max = 60,
+    Decimals = 0,
+    Suffix = "s",
+    Callback = function(Value)
+        spamDuration = math.floor(Value)
+    end
+})
+
+TrollSection:Toggle({
+    Name = "Spam Notifications",
+    Default = false,
+    Callback = function(state)
+        spamNotificationEnabled = state
+
+        if state then
+            task.spawn(function()
+                local Event = game:GetService("ReplicatedStorage"):WaitForChild("notificationFunction")
+
+                for i = 1, spamCount do
+                    if not spamNotificationEnabled then break end
+
+                    pcall(function()
+                        firesignal(
+                            Event.OnClientEvent,
+                            spamMessage,
+                            Color3.fromRGB(42, 208, 255),
+                            spamDuration
+                        )
+                    end)
+
+                    task.wait(spamDelay)
+                end
+
+                spamNotificationEnabled = false
+            end)
+        end
+    end
+})
