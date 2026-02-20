@@ -571,9 +571,9 @@ MSection:Toggle({
 
 local spamNotificationEnabled = false
 local spamMessage = "Bypassin On Top Join Discord Here - https://discord.gg/bypassin"
-local spamCount = 20
+local spamCount = 1
 local spamDelay = 0.1
-local spamDuration = 30
+local spamDuration = 1
 
 TrollSection:Textbox({
     Name = "Tweet Messages",
@@ -588,11 +588,11 @@ TrollSection:Textbox({
 
 TrollSection:Slider({
     Name = "Spam Amount",
-    Default = 20,
+    Default = 0,
     Min = 1,
     Max = 200,
     Decimals = 0,
-    Suffix = "x",
+    Suffix = "s",
     Callback = function(Value)
         spamCount = math.clamp(math.floor(Value), 1, 200)
     end
@@ -600,7 +600,7 @@ TrollSection:Slider({
 
 TrollSection:Slider({
     Name = "Spam Delay",
-    Default = 0.1,
+    Default = 0,
     Min = 0.05,
     Max = 5,
     Decimals = 2,
@@ -612,7 +612,7 @@ TrollSection:Slider({
 
 TrollSection:Slider({
     Name = "Message Duration",
-    Default = 30,
+    Default = 0,
     Min = 1,
     Max = 60,
     Decimals = 0,
