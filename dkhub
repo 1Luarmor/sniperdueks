@@ -1,4 +1,16 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/dkhub43221/newui/refs/heads/main/kiwi"))()
+local UserInputService = game:GetService("UserInputService")
+
+local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/dkhub43221/newui/refs/heads/main/kiwi"))()
+
+local windowSize
+
+if isMobile then
+    windowSize = UDim2.new(0.6, 0.35) 
+else
+    windowSize = UDim2.new(0, 400, 0, 300)
+end
 
 local Window = Library:Window({
     Name = "Bypassin",
@@ -19,22 +31,16 @@ for Index, Color in pairs(CustomTheme) do
     Library:ChangeTheme(Index, Color)
 end
 
-local Pages = {}
 
+local Pages = {}
 Pages["Main"] = Window:Page({
     Name = "Main",
     Icon = "136623465713368",
     SubPages = false
 })
 
-Pages["Players"] = Window:Page({
-    Name = "Players",
-    Icon = "118417240207681",
-    SubPages = false
-})
-
 local LocalPlayerSection = Pages["Main"]:Section({
-    Name = "Local Player Utilities",
+    Name = "Local player Utilities",
     Icon = "",
     Columns = 1,
     Side = 1
@@ -53,10 +59,11 @@ local DupeSection = Pages["Main"]:Section({
     Side = 2,
 })
 
-local TrollSection = Pages["Players"]:Section({ 
-    Name = "Troll",
-    Icon = "",
-    Columns = 2,
+local Pages = {}
+Pages["Players"] = Window:Page({
+    Name = "Players",
+    Icon = "118417240207681",
+    SubPages = false
 })
 
 local MSection = Pages["Players"]:Section({ 
@@ -566,90 +573,6 @@ MSection:Toggle({
                 loopTpConnection:Disconnect()
                 loopTpConnection = nil
             end
-        end
-    end
-})
-
-local spamNotificationEnabled = false
-local spamMessage = "Bypassin On Top Join Discord Here - https://discord.gg/bypassin"
-local spamCount = 20
-local spamDelay = 0.1
-local spamDuration = 30
-
-TrollSection:Textbox({
-    Name = "Tweet Messages",
-    Default = "",
-    Placeholder = "Input message...",
-    Callback = function(Value)
-        if Value and Value ~= "" then
-            spamMessage = tostring(Value)
-        end
-    end
-})
-
-TrollSection:Slider({
-    Name = "Spam Amount",
-    Default = 20,
-    Min = 1,
-    Max = 200,
-    Decimals = 0,
-    Suffix = "x",
-    Callback = function(Value)
-        spamCount = math.floor(Value)
-    end
-})
-
-TrollSection:Slider({
-    Name = "Spam Delay",
-    Default = 0.1,
-    Min = 0.05,
-    Max = 5,
-    Decimals = 2,
-    Suffix = "s",
-    Callback = function(Value)
-        spamDelay = Value
-    end
-})
-
-TrollSection:Slider({
-    Name = "Message Duration",
-    Default = 30,
-    Min = 1,
-    Max = 60,
-    Decimals = 0,
-    Suffix = "s",
-    Callback = function(Value)
-        spamDuration = math.floor(Value)
-    end
-})
-
-TrollSection:Toggle({
-    Name = "Spam Notifications",
-    Default = false,
-    Callback = function(state)
-        spamNotificationEnabled = state
-
-        if state then
-            task.spawn(function()
-                local Event = game:GetService("ReplicatedStorage"):WaitForChild("notificationFunction")
-
-                for i = 1, spamCount do
-                    if not spamNotificationEnabled then break end
-
-                    pcall(function()
-                        firesignal(
-                            Event.OnClientEvent,
-                            spamMessage,
-                            Color3.fromRGB(42, 208, 255),
-                            spamDuration
-                        )
-                    end)
-
-                    task.wait(spamDelay)
-                end
-
-                spamNotificationEnabled = false
-            end)
         end
     end
 })
